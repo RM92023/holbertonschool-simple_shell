@@ -1,0 +1,81 @@
+.TH C-Simple_Shell 1 "17 April 2023" "C-Simple_Shell man page"
+
+.SH NAME
+.B C-Simple_Shell\fR \ - A Simple Shell program produced by Robinson and Miguel, simple Unix Command interpreter
+
+.SH SYNOPSIS
+.B Interactive Mode\fR \ - [\filename\fR]
+.LP
+.B Non-Interactive Mode\fR \ - echo "Insert_Command" | [\filename\fR]
+
+.SH DESCRIPTION
+
+C-Simple_Shell\fR is a simple UNIX command language interpreter that reads commands from either a file or standard input and executes them, the C-Simple_Shell takes user input in two steps - the first step is to interactive and the second step is to non-interactive, and performs the proper course of action.
+
+In the interactive mode, commands are taken from the terminal. In the non-interactive mode, commands are piped from a file.
+
+.SH INVOCATION
+When an interactive shell is initiated, the variable is set and a $ will follow to indicate where the user should type in commands, If \C-Simple_Shell\fR is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
+
+If \C-Simple_Shell\fR is invoked with standard input connected to a terminal, a shell is opened.
+When executing interactively, \fBshellby\fR displays the prompt \fI$ \fR when it is ready to read a command.
+
+Alternatively, if command line arguments are supplied upon invocation, \C-Simple_Shell\fR treats the first argument as a file from which to read commands.
+
+The supplied file should contain one command per line.
+.B \C-Simple_Shell\fR runs each of the commands contained in the file in order before exiting.
+
+.SH SHELL GRAMMAR
+.RS 1
+.B Simple Commands
+.RS 2 
+A simple command is a sequence of words and operators that are delimited by spaces and terminated by a control operator.
+Upon execution, the simple command returns the exit status.
+
+.SH TOKENIZATION AND EXPANSION
+When a user types a series of words into the terminal, the incoming word is saved as a string that ends with a new line and a null character. Each word is stored in an array of character strings.
+
+.SH ALIASES
+When the first word of a tokenized string corresponds to an alias, the word is replaced with the value of the alias. Aliases cannot be created within the current version of this shell.
+
+.SH COMMAND EXECUTION
+After, the simple command has been split into words that are placed into an array of character strings. 
+
+If the first word of the string contains any slashes, then the shell will attempt to execute the command with the execve system call. Subsequent words, or arguments will be fed into the execve system call. If execve fails and returns -1, then an error message determined by the perror routine will be printed onto the standard error output. If execve is successful, then no error message will be printed and a 0, signifying success, will be returned. 
+
+If the first word of the string contains no slashes, then the shell will attempt to locate the command. 
+
+First, the command will be compared to a list of builtins in the shell. If the command name corresponds to a builtin, then the code associated with the builtin will be executed within the shell. 
+
+Second, if the command does not match, then the command will be searched for by looking at commands in the PATH. The PATH is an environment variable that contains a list of colon-delimited directories. The files of all elements in the directory are scanned through until a match is found. If a match is found, then the executable file corresponding to the command will be executed. 
+
+If the first word of the  string does not correspond to any builtin or command in the PATH, then an error message will be printed onto the standard error output. 
+
+.SH EXIT STATUS
+The exit status of an executed command is determined by the errno, a global variable that is set upon failure or success by multiple functions (isatty(), execve(), etc.). In general, a 0 is returned upon success of an executed command an a non-zero value is returned upon failure. This value will indicate the type of failure experienced when execution was attempted.  
+
+.SH SIGNALS
+The shell is set to ignore (SIG_IGN) the SIGINT (Ctrl-C) signal. The shell will exit if exit is typed into the terminal or if the EOF (Ctrl-D) is reached. 
+
+.SH EXAMPLES
+
+$ echo "qwerty" | ./hsh
+./hsh: 1: qwerty: not found
+$ echo "qwerty" | ./././hsh
+./././hsh: 1: qwerty: not found
+$
+
+$ echo "qwerty" | /bin/sh
+/bin/sh: 1: qwerty: not found
+$ echo "qwerty" | /bin/../bin/sh
+/bin/../bin/sh: 1: qwerty: not found
+$
+
+.SH SEE ALSO
+access(2), chdir(2), execve(2), _exit(2), exit(3), fflush(3), fork(2), free(3), isatty(3), getcwd(3), malloc(3), open(2), read(2), sh(1), signal(2), stat(2), wait(2), write(2)
+
+.B \C-Simple_Shell\fR
+This man page borrows from the corresponding man pages sh(1) and dash(1).
+
+.SH AUTHOR
+Robinson Muñetón Jaramillo and Miguel Angel Velez Ocampo
