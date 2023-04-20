@@ -24,7 +24,7 @@ char *get_line(void)
     return line;
 }
 
-/*char **split_line(char *line)
+char **split_line(char *line)
 {
     int bufsize = BUFFER_SIZE, position = 0;
     char **tokens = malloc(bufsize * sizeof(char *));
@@ -58,7 +58,7 @@ char *get_line(void)
 
     tokens[position] = NULL;
     return tokens;
-} */
+} 
 
 int execute_command(char **args)
 {
@@ -99,7 +99,7 @@ int main(void)
     {
         printf("$ ");
         line = get_line();
-        /*args = split_line(line);*/
+        args = split_line(line);
         status = execute_command(args);
 
         free(line);
