@@ -4,53 +4,107 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAX_CMD_LEN 100
+#define BUFFER_SIZE 1024
 
-/**
- * main - main command line interface for running
- *
- * Return: void
- */
+char *get_line(void)
+{
+    char *line = malloc(BUFFER_SIZE);
+    if (!line)
+    {
+perror("Error: malloc");
+exit(EXIT_FAILURE);
+    }
+
+    if (fgets(line, BUFFER_SIZE, stdin) == NULL)
+    {
+        perror("Error: fgets");
+        exit(EXIT_FAILURE);
+    }
+
+    return line;
+}
+
+char **split_line(char *line)
+{
+    int bufsize = BUFFER_SIZE, position = 0;
+    char **tokens = malloc(bufsize * sizeof(char *));
+    char *token;
+
+    if (!tokens)
+    {
+        perror("Error: malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    token = strtok(line, " \t\n");
+    while (token != NULL)
+    {
+        tokens[position] = token;
+        position++;
+
+        if (position >= bufsize)
+        {
+            bufsize += BUFFER_SIZE;
+            tokens = realloc(tokens, bufsize * sizeof(char *));
+            if (!tokens)
+            {
+                perror("Error: realloc");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        token = strtok(NULL, " \t\n");
+    }
+
+    tokens[position] = NULL;
+    return tokens;
+}
+
+int execute_command(char **args)
+{
+    pid_t pid;
+    int status;
+
+    pid = fork();
+    if (pid == 0)
+    {
+        if (execvp(args[0], args) == -1)
+        {
+            perror("Error: execvp");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else if (pid < 0)
+    {
+        perror("Error: fork");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        do {
+            pid = waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
+
+    return 1;
+}
+
 int main(void)
 {
-char cmd[MAX_CMD_LEN];
-pid_t pid;
-int status;
+    char *line;
+    char **args;
+    int status;
 
-while (1)
-{
-printf("$");
-fflush(stdout);
+    do
+    {
+        printf("$ ");
+        line = get_line();
+        args = split_line(line);
+        status = execute_command(args);
 
-if (fgets(cmd, MAX_CMD_LEN, stdin) == NULL)
-{
-printf("\n");
-break;
-}
+        free(line);
+        free(args);
+    } while (status);
 
-if (cmd[strlen(cmd) - 1] == '\n')
-{
-cmd[strlen(cmd) - 1] = '\0';
-}
-
-pid = fork();
-
-if (pid == -1)
-{
-perror("fork");
-exit(EXIT_FAILURE);
-}
-else if (pid == 0)
-{
-execlp(cmd, cmd, (char *) NULL);
-perror("exec");
-exit(EXIT_FAILURE);
-}
-else
-{
-do {
-waitpid(pid, &status, WUNTRACED);
-} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-}
-} return 0;
+    return EXIT_SUCCESS;
 }
