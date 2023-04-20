@@ -4,42 +4,107 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAX_CMD_LEN 100
+#define BUFFER_SIZE 1024
 
-int main(void)
+char *get_line(void)
 {
-    char cmd[MAX_CMD_LEN];
+    char *line = malloc(BUFFER_SIZE);
+    if (!line)
+    {
+perror("Error: malloc");
+exit(EXIT_FAILURE);
+    }
+
+    if (fgets(line, BUFFER_SIZE, stdin) == NULL)
+    {
+        perror("Error: fgets");
+        exit(EXIT_FAILURE);
+    }
+
+    return line;
+}
+
+char **split_line(char *line)
+{
+    int bufsize = BUFFER_SIZE, position = 0;
+    char **tokens = malloc(bufsize * sizeof(char *));
+    char *token;
+
+    if (!tokens)
+    {
+        perror("Error: malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    token = strtok(line, " \t\n");
+    while (token != NULL)
+    {
+        tokens[position] = token;
+        position++;
+
+        if (position >= bufsize)
+        {
+            bufsize += BUFFER_SIZE;
+            tokens = realloc(tokens, bufsize * sizeof(char *));
+            if (!tokens)
+            {
+                perror("Error: realloc");
+                exit(EXIT_FAILURE);
+            }
+        }
+
+        token = strtok(NULL, " \t\n");
+    }
+
+    tokens[position] = NULL;
+    return tokens;
+}
+
+int execute_command(char **args)
+{
     pid_t pid;
     int status;
 
-    while (1) {
-        printf("$");
-        fflush(stdout);
-
-        if (fgets(cmd, MAX_CMD_LEN, stdin) == NULL) {
-            printf("\n");
-            break;
-        }
-
-        if (cmd[strlen(cmd) - 1] == '\n') {
-            cmd[strlen(cmd) - 1] = '\0';
-        }
-
-        pid = fork();
-
-        if (pid == -1) {
-            perror("fork");
+    pid = fork();
+    if (pid == 0)
+    {
+        if (execvp(args[0], args) == -1)
+        {
+            perror("Error: execvp");
             exit(EXIT_FAILURE);
-        } else if (pid == 0) {
-            execlp(cmd, cmd, (char *) NULL);
-            perror("exec");
-            exit(EXIT_FAILURE);
-        } else {
-            do {
-                waitpid(pid, &status, WUNTRACED);
-            } while (!WIFEXITED(status) && !WIFSIGNALED(status));
         }
     }
+    else if (pid < 0)
+    {
+        perror("Error: fork");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        do {
+            pid = waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
 
-    return 0;
+    return 1;
+}
+
+int main(void)
+{
+    char *line;
+    char **args;
+    int status;
+
+    do
+    {
+        printf("$ ");
+        line = get_line();
+        args = split_line(line);
+        status = execute_command(args);
+
+        free(line);
+        free(args);
+    } while (status);
+
+    return EXIT_SUCCESS;
 }
