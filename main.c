@@ -11,20 +11,20 @@ char *get_line(void)
     char *line = malloc(BUFFER_SIZE);
     if (!line)
     {
-perror("Error: malloc");
-exit(EXIT_FAILURE);
+        perror("");
+        exit(EXIT_FAILURE);
     }
 
     if (fgets(line, BUFFER_SIZE, stdin) == NULL)
     {
-        perror("Error: fgets");
+        perror("");
         exit(EXIT_FAILURE);
     }
 
     return line;
 }
 
-char **split_line(char *line)
+/*char **split_line(char *line)
 {
     int bufsize = BUFFER_SIZE, position = 0;
     char **tokens = malloc(bufsize * sizeof(char *));
@@ -58,7 +58,7 @@ char **split_line(char *line)
 
     tokens[position] = NULL;
     return tokens;
-}
+} */
 
 int execute_command(char **args)
 {
@@ -70,13 +70,13 @@ int execute_command(char **args)
     {
         if (execvp(args[0], args) == -1)
         {
-            perror("Error: execvp");
+            perror("");
             exit(EXIT_FAILURE);
         }
     }
     else if (pid < 0)
     {
-        perror("Error: fork");
+        perror("");
         exit(EXIT_FAILURE);
     }
     else
@@ -99,7 +99,7 @@ int main(void)
     {
         printf("$ ");
         line = get_line();
-        args = split_line(line);
+        /*args = split_line(line);*/
         status = execute_command(args);
 
         free(line);
