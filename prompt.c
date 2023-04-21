@@ -23,6 +23,10 @@ void prompt(char **av, char **env)
             free(str);
             exit(EXIT_FAILURE);
         }
+        else
+        {
+            exit(EXIT_SUCCESS);
+        }
         i = 0;
         while (str[i])
         {
