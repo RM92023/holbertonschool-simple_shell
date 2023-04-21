@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdio.h>
 
 #define MAX_COMMAND 10
 
@@ -46,7 +47,11 @@ void prompt(char **av, char **env)
         }
         if (pid == 0)
         {
-            if (execve(argv[0], argv, env) == -1)
+            if ((argv[0] == NULL) || strlen(argv[0]) == 0)
+            {
+                continue;
+            }
+            else if (execve(argv[0], argv, env) == -1)
             {
                 printf("%s: No such file or directory\n", av[0]);
             }
