@@ -48,12 +48,12 @@ void prompt(char **av, char **env)
         {
             if (execve(argv[0], argv, env) == -1)
             {
-                printf("%s: No such file or directory\n", av[0]);
+                /*printf("%s: No such file or directory\n", av[0]);*/
             }
         }
         else
         {
-            /*wait(&status);*/
+            wait(&status);
         }
     }
 }
