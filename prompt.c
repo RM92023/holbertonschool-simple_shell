@@ -21,10 +21,6 @@ void prompt(char **av, char **env)
         if (num_char == -1)
         {
             free(str);
-            exit(EXIT_FAILURE);
-        }
-        else
-        {
             exit(EXIT_SUCCESS);
         }
         i = 0;
