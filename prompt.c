@@ -2,7 +2,7 @@
 
 #define MAX_COMMAND 10
 
-void prompt(char **av, char **env)
+void prompt(char **av, char **env, int interactive)
 {
     char *str = NULL;
     int i, j, status;
@@ -12,17 +12,34 @@ void prompt(char **av, char **env)
     pid_t pid;
     while (1)
     {
-        if (isatty(STDIN_FILENO))
+        if (interactive && isatty(STDIN_FILENO))
         {
-        printf("$ ");
+            printf("$ ");
         }
 
-        num_char = getline(&str, &n, stdin);
-        if (num_char == -1)
+        if (!interactive)
         {
-            free(str);
-            exit(EXIT_SUCCESS);
+            num_char = getline(&str, &n, stdin);
+            if (num_char == -1)
+            {
+                free(str);
+                exit(EXIT_SUCCESS);
+            }
         }
+        else
+        {
+            num_char = getline(&str, &n, stdin);
+            if (num_char == -1)
+            {
+                if (interactive)
+                {
+                    printf("\n");
+                }
+                free(str);
+                break;
+            }
+        }
+
         i = 0;
         while (str[i])
         {
@@ -50,9 +67,22 @@ void prompt(char **av, char **env)
             {
                 continue;
             }
-            else if (execve(argv[0], argv, env) == -1)
+            else
             {
-                printf("%s: No such file or directory\n", av[0]);
+                char *cmd = basename(argv[0]);
+                char cmd_path[256];
+                if (access(cmd, X_OK) == 0)
+                {
+                    strcpy(cmd_path, cmd);
+                }
+                else
+                {
+                    sprintf(cmd_path, "/bin/%s", cmd);
+                }
+                if (execve(cmd_path, argv, env) == -1)
+                {
+                    printf("%s: No such file or directory\n", av[0]);
+                }
             }
         }
         else
