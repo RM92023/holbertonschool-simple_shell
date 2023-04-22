@@ -6,7 +6,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <libgen.h>
 
-void prompt(char **av, char **env);
+void prompt(char **av, char **env, int interactive);
 
 #endif
