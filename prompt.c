@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdbool.h>
 
 #define MAX_COMMAND 10
 
@@ -10,12 +11,14 @@ void prompt(char **av, char **env)
     ssize_t num_char;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
+    char **ptr;
+    bool found;
     pid_t pid;
     while (1)
     {
         if (isatty(STDIN_FILENO))
         {
-            printf("$ ");
+        printf("$ ");
         }
         num_char = getline(&str, &n, stdin);
         if (num_char == -1)
@@ -33,19 +36,43 @@ void prompt(char **av, char **env)
             i++;
         }
 
-        if (strcmp(str, "clear") == 0)
-        {
-            printf("\033[2J\033[1;1H");
-            continue;
-        }
-
         path = getenv("PATH");
+        found = false;
         j = 0;
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
         {
             argv[++j] = strtok(NULL, " ");
         }
+
+        if ((argv[0] == NULL) || strlen(argv[0]) == 0)
+        {
+            continue;
+        }
+
+        if (strcmp(argv[0], "clear") == 0)
+        {
+            system("clear");
+            continue;
+        }
+
+        if (strcmp(argv[0], "exit") == 0)
+        {
+            free(str);
+            exit(EXIT_SUCCESS);
+        }
+
+        if (strcmp(argv[0], "env") == 0)
+        {
+            ptr = env;
+            while (*ptr != NULL)
+            {
+                printf("%s\n", *ptr);
+                ptr++;
+            }
+            continue;
+        }
+
         pid = fork();
         if (pid == -1)
         {
@@ -54,13 +81,16 @@ void prompt(char **av, char **env)
         }
         if (pid == 0)
         {
-            if ((argv[0] == NULL) || strlen(argv[0]) == 0)
+            /* If command starts with "/", assume it is an absolute path */
+            if (argv[0][0] == '/')
             {
-                continue;
+                if (execve(argv[0], argv, env) == -1)
+                {
+                    printf("%s: No such file or directory\n", argv[0]);
+                }
             }
-
-            if (execve(argv[0], argv, env) == -1)
-            { 
+            else
+            {
                 token = strtok(path, ":");
                 while (token != NULL)
                 {
@@ -68,23 +98,23 @@ void prompt(char **av, char **env)
                     sprintf(cmd_path, "%s/%s", token, argv[0]);
                     if (access(cmd_path, F_OK) == 0)
                     {
+                        found = true;
                         argv[0] = cmd_path;
                         execve(argv [0], argv, env);
                     }
                     else
                     {
                         free(cmd_path);
-                        token =strtok(NULL, ":");
+                        token = strtok(NULL, ":");
                     }
                 }
-                printf("%s:commnand not found\n", av[0]);
-                free(str);
-                exit(EXIT_FAILURE);
+                if (!found)
+                {
+                    printf("%s: command not found\n", av[0]);
+                }
             }
-            else
-            {
-                return;
-            }
+            free(str);
+            exit(EXIT_FAILURE);
         }
         else
         {
