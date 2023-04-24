@@ -1,5 +1,8 @@
 #include "main.h"
+
+
 #define MAX_COMMAND 10
+
 void prompt(char **av, char **env)
 {
     char *str = NULL;
@@ -7,8 +10,8 @@ void prompt(char **av, char **env)
     size_t n = 0;
     ssize_t num_char;
     char *argv[MAX_COMMAND];
+    char *path, *cmd_path, *token;
     pid_t pid;
-    char *cmd_path;
     while (1)
     {
         if (isatty(STDIN_FILENO))
@@ -30,24 +33,13 @@ void prompt(char **av, char **env)
             }
             i++;
         }
-        /* Ignore empty lines and leading/trailing spaces */
-        if (strcmp(str, "\n") == 0 || strspn(str, " \t\n") == strlen(str))
-        {
-            continue;
-        }
+
+        path = getenv("PATH");
         j = 0;
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
         {
             argv[++j] = strtok(NULL, " ");
-        }
-        /* Check if command exists */
-       if (argv[0][0] != '/')
-        {
-            char* new_command = malloc(strlen(argv[0]) + 5); /* agregar espacio para "/bin/" */
-            strcpy(new_command, "/bin/");
-            strcat(new_command, argv[0]);
-            argv[0] = new_command;
         }
         pid = fork();
         if (pid == -1)
@@ -57,37 +49,40 @@ void prompt(char **av, char **env)
         }
         if (pid == 0)
         {
-            /* Set PATH to empty string */
-            putenv("PATH=");
-            /* Remove all environment variables */
-            clearenv();
-            /* Remove PATH variable and set PATH1 variable */
-            unsetenv("PATH");
-            setenv("PATH1", "/bin:/usr/bin", 1);
-            /*if ((argv[0] == NULL) || strlen(argv[0]) == 0)
-                {
-                    continue;
-                }
-            else*/ if (execve(argv[0], argv, env) == -1)
+            if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
-                cmd_path = search_command(argv[0], env);
-                if (cmd_path == NULL)
+                continue;
+            }
+            /*else if (execve(argv[0], argv, env) == -1)
+            {
+                printf("%s: No such file or directory\n", av[0]);
+            }*/
+
+            if (execve(argv[0], argv, env) == -1)
+            { 
+                token = strtok(path, ":");
+                while (token != NULL)
                 {
-                    printf("%s: command not found-migue\n", av[0]);
-                    free(str);
-                    exit(EXIT_FAILURE);
-                }
-                else
-                {
-                    if (execve(cmd_path, argv, env) == -1)
+                    cmd_path = malloc(strlen(token) + strlen(argv[0]) + 2);
+                    sprintf(cmd_path, "%s/%s", token, argv[0]);
+                    if (access(cmd_path, F_OK) == 0)
                     {
-                        printf("%s: command not found-rm\n", av[0]);
-                        free(str);
-                        free(cmd_path);
-                        exit(EXIT_FAILURE);
+                        argv[0] = cmd_path;
+                        execve(argv [0], argv, env);
                     }
-                    free(cmd_path);
+                    else
+                    {
+                        free(cmd_path);
+                        token =strtok(NULL, ":");
+                    }
                 }
+                printf("%s:commnand not found\n", av[0]);
+                free(str);
+                exit(EXIT_FAILURE);
+            }
+            else
+            {
+                return;
             }
         }
         else
