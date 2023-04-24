@@ -11,6 +11,7 @@ void prompt(char **av, char **env)
     ssize_t num_char;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
+    /*char *empty_envp;*/
     pid_t pid;
     while (1)
     {
@@ -25,6 +26,11 @@ void prompt(char **av, char **env)
             free(str);
             exit(EXIT_SUCCESS);
         }
+        else if (num_char == -1)
+        {
+            continue;
+        }
+        
         i = 0;
         while (str[i])
         {
@@ -35,7 +41,22 @@ void prompt(char **av, char **env)
             i++;
         }
 
+        /*i = 0;
+        empty_envp[i] = ("NULL");        nuevas lineas (remove all environment)
+        for (i = 0; env[i] != NULL; i++)
+        {
+            unsetenv(env[i]);
+        }*/
+
+        /*setenv("PATH", "", 1); nueva linea (empty string)*/
+
         path = getenv("PATH");
+        if (path == NULL)
+        {
+            printf("Error: PATH is not set.\n");
+            continue;
+        }
+
         j = 0;
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
@@ -54,11 +75,7 @@ void prompt(char **av, char **env)
             {
                 continue;
             }
-            /*else if (execve(argv[0], argv, env) == -1)
-            {
-                printf("%s: No such file or directory\n", av[0]);
-            }*/
-
+        
             if (execve(argv[0], argv, env) == -1)
             { 
                 token = strtok(path, ":");
@@ -80,6 +97,10 @@ void prompt(char **av, char **env)
                 printf("%s:commnand not found\n", av[0]);
                 free(str);
                 exit(EXIT_FAILURE);
+            }
+            else if (execve(argv[0], argv, env) == -1) /*se une al else if del codigo siguiente ()*/
+            {
+                printf("%s: No such file or directory\n", av[0]);
             }
             else
             {
