@@ -18,7 +18,6 @@ void prompt(char **av, char **env)
         {
         printf("$ ");
         }
-
         num_char = getline(&str, &n, stdin);
         if (num_char == -1)
         {
