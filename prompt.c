@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 #define MAX_COMMAND 10
 
 void prompt(char **av, char **env)
@@ -11,12 +10,23 @@ void prompt(char **av, char **env)
     ssize_t num_char;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
+    int line_num = 1;
+
     pid_t pid;
+
+    /* Agregar path del directorio actual al comienzo de PATH */
+    char *current_dir = getcwd(NULL, 0);
+    char *new_path = malloc(strlen(current_dir) + strlen(getenv("PATH")) + 2);
+    sprintf(new_path, "%s:%s", current_dir, getenv("PATH"));
+    setenv("PATH", new_path, 1);
+    free(current_dir);
+    free(new_path);
+
     while (1)
     {
         if (isatty(STDIN_FILENO))
         {
-        printf("$ ");
+            printf("$ ");
         }
         num_char = getline(&str, &n, stdin);
         if (num_char == -1)
@@ -39,8 +49,10 @@ void prompt(char **av, char **env)
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
         {
-            argv[++j] = strtok(NULL, " ");
+            j++;
+            argv[j] = strtok(NULL, " ");
         }
+        argv[j] = NULL; /* Asegurarse de que el último elemento sea NULL. */
         pid = fork();
         if (pid == -1)
         {
@@ -53,10 +65,6 @@ void prompt(char **av, char **env)
             {
                 continue;
             }
-            /*else if (execve(argv[0], argv, env) == -1)
-            {
-                printf("%s: No such file or directory\n", av[0]);
-            }*/
 
             if (execve(argv[0], argv, env) == -1)
             { 
@@ -76,9 +84,9 @@ void prompt(char **av, char **env)
                         token =strtok(NULL, ":");
                     }
                 }
-                printf("%s:commnand not found\n", av[0]);
+                fprintf(stderr, "%s: %d: %s: not found\n", av[0], line_num, argv[0]);
                 free(str);
-                exit(EXIT_FAILURE);
+                exit(127); /* Comando no encontrado */
             }
             else
             {
