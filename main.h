@@ -6,9 +6,11 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <libgen.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 
 void prompt(char **av, char **env);
+char *search_command(char *cmd, char **env);
 
 #endif
