@@ -29,5 +29,6 @@ char *search_command(char *cmd, char **env)
         free(cmd_path);
         token = strtok(NULL, ":");
     }
+    
     return NULL;
 }

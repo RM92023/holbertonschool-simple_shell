@@ -35,12 +35,27 @@ void prompt(char **av, char **env)
             }
             i++;
         }
+
+        /* Ignore empty lines and leading/trailing spaces */
+        if (strcmp(str, "\n") == 0 || strspn(str, " \t\n") == strlen(str))
+        {
+            continue;
+        }
+
         j = 0;
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
         {
             argv[++j] = strtok(NULL, " ");
         }
+
+        /* Check if command exists */
+        if (access(argv[0], F_OK) == -1)
+        {
+            printf("%s: command not found\n", argv[0]);
+            continue;
+        }
+
         pid = fork();
         if (pid == -1)
         {
@@ -49,11 +64,21 @@ void prompt(char **av, char **env)
         }
         if (pid == 0)
         {
-            if ((argv[0] == NULL) || strlen(argv[0]) == 0)
+            /* Set PATH to empty string */
+            putenv("PATH=");
+
+            /* Remove all environment variables */
+            clearenv();
+
+            /* Remove PATH variable and set PATH1 variable */
+            unsetenv("PATH");
+            setenv("PATH1", "/bin:/usr/bin", 1);
+
+            /*if ((argv[0] == NULL) || strlen(argv[0]) == 0)
                 {
                     continue;
                 }
-            else if (execve(argv[0], argv, env) == -1)
+            else*/ if (execve(argv[0], argv, env) == -1)
             {
                 cmd_path = search_command(argv[0], env);
                 if (cmd_path == NULL)
