@@ -42,10 +42,12 @@ void prompt(char **av, char **env)
             argv[++j] = strtok(NULL, " ");
         }
         /* Check if command exists */
-        if (access(argv[0], F_OK) == -1)
+       if (argv[0][0] != '/')
         {
-            printf("%s: command not found\n", argv[0]);
-            continue;
+            char* new_command = malloc(strlen(argv[0]) + 5); /* agregar espacio para "/bin/" */
+            strcpy(new_command, "/bin/");
+            strcat(new_command, argv[0]);
+            argv[0] = new_command;
         }
         pid = fork();
         if (pid == -1)
@@ -62,16 +64,16 @@ void prompt(char **av, char **env)
             /* Remove PATH variable and set PATH1 variable */
             unsetenv("PATH");
             setenv("PATH1", "/bin:/usr/bin", 1);
-            if ((argv[0] == NULL) || strlen(argv[0]) == 0)
+            /*if ((argv[0] == NULL) || strlen(argv[0]) == 0)
                 {
                     continue;
                 }
-            else if (execve(argv[0], argv, env) == -1)
+            else*/ if (execve(argv[0], argv, env) == -1)
             {
                 cmd_path = search_command(argv[0], env);
                 if (cmd_path == NULL)
                 {
-                    printf("%s: command not found\n", av[0]);
+                    printf("%s: command not found-migue\n", av[0]);
                     free(str);
                     exit(EXIT_FAILURE);
                 }
@@ -79,7 +81,7 @@ void prompt(char **av, char **env)
                 {
                     if (execve(cmd_path, argv, env) == -1)
                     {
-                        printf("%s: command not found\n", av[0]);
+                        printf("%s: command not found-rm\n", av[0]);
                         free(str);
                         free(cmd_path);
                         exit(EXIT_FAILURE);
