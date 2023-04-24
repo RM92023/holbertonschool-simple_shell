@@ -9,14 +9,14 @@ void prompt(char **av, char **env)
     size_t n = 0;
     ssize_t num_char;
     char *argv[MAX_COMMAND];
+    char *path, *cmd_path, *token;
     pid_t pid;
     while (1)
     {
         if (isatty(STDIN_FILENO))
         {
-        printf("$ ");
+            printf("$ ");
         }
-
         num_char = getline(&str, &n, stdin);
         if (num_char == -1)
         {
@@ -32,6 +32,16 @@ void prompt(char **av, char **env)
             }
             i++;
         }
+
+        if (strcmp(str, "env") == 0) {
+            unsetenv("PATH");
+            unsetenv("HOME");
+            unsetenv("PWD");
+            unsetenv("OLDPWD");
+            execlp("ls", "ls", NULL);
+        }
+
+        path = getenv("PATH");
         j = 0;
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
@@ -50,9 +60,36 @@ void prompt(char **av, char **env)
             {
                 continue;
             }
-            else if (execve(argv[0], argv, env) == -1)
+            /*else if (execve(argv[0], argv, env) == -1)
             {
                 printf("%s: No such file or directory\n", av[0]);
+            }*/
+
+            if (execve(argv[0], argv, env) == -1)
+            { 
+                token = strtok(path, ":");
+                while (token != NULL)
+                {
+                    cmd_path = malloc(strlen(token) + strlen(argv[0]) + 2);
+                    sprintf(cmd_path, "%s/%s", token, argv[0]);
+                    if (access(cmd_path, F_OK) == 0)
+                    {
+                        argv[0] = cmd_path;
+                        execve(argv [0], argv, env);
+                    }
+                    else
+                    {
+                        free(cmd_path);
+                        token =strtok(NULL, ":");
+                    }
+                }
+                printf("%s:commnand not found\n", av[0]);
+                free(str);
+                exit(EXIT_FAILURE);
+            }
+            else
+            {
+                return;
             }
         }
         else
