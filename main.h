@@ -9,6 +9,6 @@
 #include <sys/stat.h>
 #include <libgen.h>
 
-void prompt(char **av, char **env, int interactive);
+void prompt(char **av, char **env);
 
 #endif
