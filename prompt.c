@@ -1,7 +1,6 @@
 #include "main.h"
 
 #define MAX_COMMAND 10
-
 void prompt(char **av, char **env, int interactive)
 {
     char *str = NULL;
@@ -16,7 +15,6 @@ void prompt(char **av, char **env, int interactive)
         {
             printf("$ ");
         }
-
         if (!interactive)
         {
             num_char = getline(&str, &n, stdin);
@@ -39,7 +37,6 @@ void prompt(char **av, char **env, int interactive)
                 break;
             }
         }
-
         i = 0;
         while (str[i])
         {
@@ -75,13 +72,23 @@ void prompt(char **av, char **env, int interactive)
                 {
                     strcpy(cmd_path, cmd);
                 }
-                else
+                else if (access(cmd, F_OK) == 0)
+                {
+                    sprintf(cmd_path, "./%s", cmd);
+                }
+                else if (access("/bin", X_OK) == 0 && access("/bin/ls", X_OK) == 0)
                 {
                     sprintf(cmd_path, "/bin/%s", cmd);
                 }
+                else
+                {
+                    printf("%s: command not found\n", cmd);
+                    exit(EXIT_FAILURE);
+                }
                 if (execve(cmd_path, argv, env) == -1)
                 {
-                    printf("%s: No such file or directory\n", av[0]);
+                    printf("%s: No such file or directory\n", cmd);
+                    exit(EXIT_FAILURE);
                 }
             }
         }
