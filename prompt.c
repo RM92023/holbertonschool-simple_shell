@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 #define MAX_COMMAND 10
 
 void prompt(char **av, char **env)
@@ -11,26 +10,19 @@ void prompt(char **av, char **env)
     ssize_t num_char;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
-    /*char *empty_envp;*/
     pid_t pid;
     while (1)
     {
         if (isatty(STDIN_FILENO))
         {
-        printf("$ ");
+            printf("$ ");
         }
-
         num_char = getline(&str, &n, stdin);
         if (num_char == -1)
         {
             free(str);
             exit(EXIT_SUCCESS);
         }
-        else if (num_char == -1)
-        {
-            continue;
-        }
-        
         i = 0;
         while (str[i])
         {
@@ -41,22 +33,13 @@ void prompt(char **av, char **env)
             i++;
         }
 
-        /*i = 0;
-        empty_envp[i] = ("NULL");        nuevas lineas (remove all environment)
-        for (i = 0; env[i] != NULL; i++)
+        if (strcmp(str, "clear") == 0)
         {
-            unsetenv(env[i]);
-        }*/
-
-        /*setenv("PATH", "", 1); nueva linea (empty string)*/
-
-        path = getenv("PATH");
-        if (path == NULL)
-        {
-            printf("Error: PATH is not set.\n");
+            printf("\033[2J\033[1;1H");
             continue;
         }
 
+        path = getenv("PATH");
         j = 0;
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
@@ -75,7 +58,7 @@ void prompt(char **av, char **env)
             {
                 continue;
             }
-        
+
             if (execve(argv[0], argv, env) == -1)
             { 
                 token = strtok(path, ":");
@@ -97,10 +80,6 @@ void prompt(char **av, char **env)
                 printf("%s:commnand not found\n", av[0]);
                 free(str);
                 exit(EXIT_FAILURE);
-            }
-            else if (execve(argv[0], argv, env) == -1) /*se une al else if del codigo siguiente ()*/
-            {
-                printf("%s: No such file or directory\n", av[0]);
             }
             else
             {
