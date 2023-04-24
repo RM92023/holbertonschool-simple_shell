@@ -62,11 +62,11 @@ void prompt(char **av, char **env)
             /* Remove PATH variable and set PATH1 variable */
             unsetenv("PATH");
             setenv("PATH1", "/bin:/usr/bin", 1);
-            /*if ((argv[0] == NULL) || strlen(argv[0]) == 0)
+            if ((argv[0] == NULL) || strlen(argv[0]) == 0)
                 {
                     continue;
                 }
-            else*/ if (execve(argv[0], argv, env) == -1)
+            else if (execve(argv[0], argv, env) == -1)
             {
                 cmd_path = search_command(argv[0], env);
                 if (cmd_path == NULL)
