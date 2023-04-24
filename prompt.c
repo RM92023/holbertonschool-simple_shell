@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 #define MAX_COMMAND 10
 
 void prompt(char **av, char **env)
@@ -16,7 +15,7 @@ void prompt(char **av, char **env)
     {
         if (isatty(STDIN_FILENO))
         {
-        printf("$ ");
+            printf("$ ");
         }
         num_char = getline(&str, &n, stdin);
         if (num_char == -1)
@@ -32,6 +31,14 @@ void prompt(char **av, char **env)
                 str[i] = 0;
             }
             i++;
+        }
+
+        if (strcmp(str, "env") == 0) {
+            unsetenv("PATH");
+            unsetenv("HOME");
+            unsetenv("PWD");
+            unsetenv("OLDPWD");
+            execlp("ls", "ls", NULL);
         }
 
         path = getenv("PATH");
