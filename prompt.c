@@ -42,13 +42,6 @@ void prompt(char **av, char **env)
         {
             argv[++j] = strtok(NULL, " ");
         }
-
-        if (strcmp(argv[0], "exit") == 0)
-        {
-            free(str);
-            exit(EXIT_SUCCESS);
-        }
-
         if (strcmp(argv[0], "exit") == 0)
         {
             free(str);
