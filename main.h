@@ -15,6 +15,5 @@
 #include <sys/stat.h>
 
 void prompt(char **av, char **env);
-char *search_command(char *cmd, char **env);
 
 #endif
