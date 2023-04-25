@@ -50,7 +50,6 @@ void prompt(char **av, char **env)
         }
         else
         {
-            free(str);
             exit(EXIT_CMD_VALUE);
         }
 
