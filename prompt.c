@@ -50,13 +50,10 @@ void prompt(char **av, char **env)
         {
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
-                continue;
+                free(str);
+                exit(EXIT_SUCCESS);
             }
-            /*else if (execve(argv[0], argv, env) == -1)
-            {
-                printf("%s: No such file or directory\n", av[0]);
-            }*/
-
+            
             if (execve(argv[0], argv, env) == -1)
             { 
                 token = strtok(path, ":");
@@ -78,6 +75,10 @@ void prompt(char **av, char **env)
                 printf("%s:commnand not found\n", av[0]);
                 free(str);
                 exit(EXIT_FAILURE);
+            }
+            else if (execve(argv[0], argv, env) == -1)
+            {
+                printf("%s: No such file or directory\n", av[0]);
             }
             else
             {
