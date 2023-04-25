@@ -77,16 +77,26 @@ void prompt(char **av, char **env)
                         token =strtok(NULL, ":");
                     }
                 }
-                fprintf(stderr, "%s:command not found\n", av[0]);
+                if (WIFEXITED(status) && WEXITSTATUS(status) == 127)
+                {
+                    fprintf(stderr, "%s: 1: %s: not found\n", av[0], argv[0]);
+                }
+                else {
+                    fprintf(stderr, "%s:command not found\n", av[0]);
+                }
                 free(str);
-                exit(127);/*Change FAILURE to SUCCESS*/
+                exit(127); /*Change FAILURE to SUCCESS*/
+
+                /*fprintf(stderr, "%s:command not found\n", av[0]);
+                free(str);
+                exit(127);*//*Change FAILURE to SUCCESS*/
             }
-            else if (execve(argv[0], argv, NULL) == -1)
+            /*else if (execve(argv[0], argv, NULL) == -1)
             {
                 fprintf(stderr, "%s: 1: %s: not found\n", av[0], argv[0]);
                 free(str);
-                exit(127);/*Change FAILURE to SUCCESS*/
-            }
+                exit(127); Change FAILURE to SUCCESS
+            }*/
             else
             {
                 return;
