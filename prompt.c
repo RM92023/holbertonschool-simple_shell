@@ -1,5 +1,6 @@
 #include "main.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
@@ -23,12 +24,7 @@ void prompt(char **av, char **env)
         {
             free(str);
             exit(EXIT_SUCCESS);
-        }/*addin ELSE IF*/
-        else if (num_char == 1)/*Delete if not buggin*/
-        {
-            free(str);
-            exit(EXIT_SUCCESS);
-        }/*Ending ELSE*/
+        }
         i = 0;
         while (str[i])
         {
@@ -50,7 +46,7 @@ void prompt(char **av, char **env)
         if (pid == -1)
         {
             free(str);
-            exit(EXIT_SUCCESS);/*Change FAILURE to SUCCESS*/
+            exit(EXIT_FAILURE);/*Change FAILURE to SUCCESS*/
         }
         if (pid == 0)
         {
@@ -79,11 +75,13 @@ void prompt(char **av, char **env)
                 }
                 if (WIFEXITED(status) && WEXITSTATUS(status) == 127)
                 {
-                    fprintf(stderr, "%s:command not found\n", av[0]);
+                    dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", av[0], argv[0]);
+                    free(str);
+                    exit(127);
                 }
                 else 
                 {
-                    fprintf(stderr, "%s: 1: %s: not found\n", av[0], argv[0]);
+                    fprintf(stderr, "%s:command not found\n", av[0]);
                 }
                 free(str);
                 exit(127); /*Change FAILURE to SUCCESS*/
