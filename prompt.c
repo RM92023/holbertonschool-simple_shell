@@ -50,10 +50,9 @@ void prompt(char **av, char **env)
         {
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
-                free(str);
-                exit(EXIT_SUCCESS);
+                continue;
             }
-            
+
             if (execve(argv[0], argv, env) == -1)
             { 
                 token = strtok(path, ":");
@@ -72,9 +71,9 @@ void prompt(char **av, char **env)
                         token =strtok(NULL, ":");
                     }
                 }
-                printf("%s:commnand not found\n", av[0]);
+                printf("%s:command not found\n", av[0]);
                 free(str);
-                exit(EXIT_FAILURE);
+                exit(127);
             }
             else if (execve(argv[0], argv, env) == -1)
             {
