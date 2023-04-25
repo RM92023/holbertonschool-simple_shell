@@ -53,7 +53,6 @@ void prompt(char **av, char **env)
             {
                 continue;
             }
-            else if (execve(argv[0], argv, env) == -1)
             /*else if (execve(argv[0], argv, env) == -1)
             {
                 printf("%s: No such file or directory\n", av[0]);
