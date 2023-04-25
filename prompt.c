@@ -75,10 +75,10 @@ void prompt(char **av, char **env)
                 free(str);
                 exit(127);
             }
-            else if (execve(argv[0], argv, env) == -1)
+            /*else if (execve(argv[0], argv, env) == -1)
             {
                 printf("%s: No such file or directory\n", av[0]);
-            }
+            }*/
             else
             {
                 return;
