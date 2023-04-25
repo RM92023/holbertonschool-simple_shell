@@ -7,7 +7,7 @@
 char SHELL_NAME[50] = "myShell";
 int QUIT = 0;
 
-// Function to read a line from command into the buffer
+/* Function to read a line from command into the buffer */
 char *readLine()
 {
 	char *line = (char *)malloc(sizeof(char) * 1024); // Dynamically Allocate Buffer
@@ -21,7 +21,7 @@ char *readLine()
 	while(1)
 	{
 		c=getchar();
-		if (c == EOF || c == '\n') // If End of File or New line, replace with Null character
+		if (c == EOF || c == '\n') /* If End of File or New line, replace with Null character */
 		{
 			line[pos] = '\0';
 			return line;
@@ -31,7 +31,7 @@ char *readLine()
 			line[pos] = c;
 		}
 		pos ++;
-		// If we have exceeded the buffer
+		/* If we have exceeded the buffer */
 		if (pos >= bufsize)
 		{
 			bufsize += 1024;
@@ -46,7 +46,7 @@ char *readLine()
 
 }
 
-// Function to split a line into constituent commands
+/* Function to split a line into constituent commands */
 char **splitLine(char *line)
 {
 	char **tokens = (char **)malloc(sizeof(char *) * 64);
@@ -79,23 +79,23 @@ char **splitLine(char *line)
 	return tokens;
 }
 
-// Section Dealing with Built-in Commands
+/* Section Dealing with Built-in Commands */
 
-// Function Declarations
+/* Function Declarations */
 int myShell_cd(char **args);
 int myShell_exit();
 
-// Definitions
+/* Definitions */
 char *builtin_cmd[] = {"cd", "exit"};
 
-int (*builtin_func[]) (char **) = {&myShell_cd, &myShell_exit}; // Array of function pointers for call from execShell
+int (*builtin_func[]) (char **) = {&myShell_cd, &myShell_exit}; /* Array of function pointers for call from execShell */
 
-int numBuiltin() // Function to return number of builtin commands
+int numBuiltin() /* Function to return number of builtin commands */
 {
 	return sizeof(builtin_cmd)/sizeof(char *);
 }
 
-// Builtin command definitions
+/* Builtin command definitions */
 int myShell_cd(char **args)
 {
 	if (args[1] == NULL) 
@@ -118,7 +118,7 @@ int myShell_exit()
 	return 0;
 }
 
-// Function to create child process and run command
+/* Function to create child process and run command */
 int myShellLaunch(char **args)
 {
 	pid_t pid, wpid;
@@ -126,7 +126,7 @@ int myShellLaunch(char **args)
 	pid = fork();
 	if (pid == 0)
 	{
-		// The Child Process
+		/* The Child Process */
 		if (execvp(args[0], args) == -1)
 		{
 			perror("myShell: ");
@@ -135,12 +135,12 @@ int myShellLaunch(char **args)
 	}
 	else if (pid < 0)
 	{
-		//Forking Error
+		/*Forking Error */
 		perror("myShell: ");
 	}
 	else
 	{
-		// The Parent Process
+		/* The Parent Process */
 	do 
 	{
       wpid = waitpid(pid, &status, WUNTRACED);
@@ -149,7 +149,7 @@ int myShellLaunch(char **args)
 	return 1;
 }
 
-// Function to execute command from terminal
+/* Function to execute command from terminal */
 int execShell(char **args)
 {
 	int ret;
@@ -158,17 +158,17 @@ int execShell(char **args)
 		// Empty command
 		return 1;
 	}
-	// Loop to check for builtin functions
-	for (int i=0; i< numBuiltin(); i++) // numBuiltin() returns the number of builtin functions
+	/* Loop to check for builtin functions */
+	for (int i=0; i< numBuiltin(); i++) /* numBuiltin() returns the number of builtin functions */
 	{
-		if(strcmp(args[0], builtin_cmd[i])==0) // Check if user function matches builtin function name
-			return (*builtin_func[i])(args); // Call respective builtin function with arguments
+		if(strcmp(args[0], builtin_cmd[i])==0) /* Check if user function matches builtin function name */
+			return (*builtin_func[i])(args); /* Call respective builtin function with arguments */
 	}
 	ret = myShellLaunch(args);
 	return ret;
 }
 
-// Read and Parse from Config File
+/* Read and Parse from Config File */
 int readConfig()
 {
 	FILE *fptr;
@@ -195,7 +195,7 @@ int readConfig()
 	return 1;
 }
 
-// When myShell is called Interactively
+/* When myShell is called Interactively */
 int myShellInteract()
 {
 	char *line;
@@ -212,7 +212,7 @@ int myShellInteract()
 	return 1;
 }
 
-// When myShell is called with a Script as Argument
+/* When myShell is called with a Script as Argument */
 int myShellScript(char filename[100])
 {
 	printf("Received Script. Opening %s", filename);
@@ -242,9 +242,9 @@ int myShellScript(char filename[100])
 
 int main(int argc, char **argv)
 {
-	// Read from myShell Configuration Files
+	/* Read from myShell Configuration Files */
 	readConfig();
-	// Parsing commands Interactive mode or Script Mode
+	/* Parsing commands Interactive mode or Script Mode */
 	if (argc == 1)
 		myShellInteract();
 	else if (argc == 2)
@@ -252,6 +252,6 @@ int main(int argc, char **argv)
 	else
 		printf("\nInvalid Number of Arguments");
 
-	// Exit the Shell
+	/* Exit the Shell */
 	return EXIT_SUCCESS;
 }
