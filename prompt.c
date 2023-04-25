@@ -1,8 +1,6 @@
 #include "main.h"
-#include <stdlib.h>
 
 #define MAX_COMMAND 10
-#define EXIT_CMD_VALUE 2
 
 void prompt(char **av, char **env)
 {
@@ -12,6 +10,8 @@ void prompt(char **av, char **env)
     ssize_t num_char;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
+    char **ptr;/*exit and env*/
+    /*bool found; exit and env*/
     pid_t pid;
     while (1)
     {
@@ -36,6 +36,7 @@ void prompt(char **av, char **env)
         }
 
         path = getenv("PATH");
+        /*found = false; new line env exit*/
         j = 0;
         argv[j] = strtok(str, " ");
         while (argv[j] != NULL)
@@ -43,15 +44,30 @@ void prompt(char **av, char **env)
             argv[++j] = strtok(NULL, " ");
         }
 
+        /*begin exit and env*/
+        if (strcmp(argv[0], "clear") == 0)
+            {
+                system("clear");
+                continue;
+            }
+
         if (strcmp(argv[0], "exit") == 0)
-        {
-            free(str);
-            exit(0);
+            {
+                free(str);
+                exit(EXIT_SUCCESS);
+            }
+
+        if (strcmp(argv[0], "env") == 0)
+            {
+                ptr = env;
+                while (*ptr != NULL)
+            {
+                printf("%s\n", *ptr);
+                ptr++;
+            }
+            continue;
         }
-        else
-        {
-            exit(EXIT_CMD_VALUE);
-        }
+        /*End Exit and env*/
 
 
         pid = fork();
@@ -85,19 +101,9 @@ void prompt(char **av, char **env)
                         token =strtok(NULL, ":");
                     }
                 }
-                if (WIFEXITED(status) && WEXITSTATUS(status) == 127)
-                {
-                    fprintf(stderr, "%s:command not found\n", av[0]);
-                    free(str);
-                    exit(127);
-                }
-                else 
-                {
-                    fprintf(stderr, "/hsh: 1: %s: not found\n", argv[0]);
+                    fprintf(stderr, "/hsh: 1: %s: not found\n", av[0]);
                     free(str);
                     exit(127); /*Change FAILURE to SUCCESS*/
-                }
-                
 
                 /*fprintf(stderr, "%s:command not found\n", av[0]);
                 free(str);
