@@ -5,8 +5,6 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+.vscode/*.json
 prompt
-
-main.c
-
-main.h
+.DS_Store
