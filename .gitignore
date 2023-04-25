@@ -6,3 +6,7 @@
 !.vscode/*.code-snippets
 
 prompt
+
+main.c
+
+main.h
