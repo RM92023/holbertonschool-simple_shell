@@ -42,11 +42,18 @@ void prompt(char **av, char **env)
         {
             argv[++j] = strtok(NULL, " ");
         }
+        
         if (strcmp(argv[0], "exit") == 0)
         {
             free(str);
             exit(EXIT_CMD_VALUE);
         }
+        else
+        {
+            free(str);
+            exit(0);
+        }
+
 
         pid = fork();
         if (pid == -1)
