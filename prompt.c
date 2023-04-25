@@ -71,13 +71,15 @@ void prompt(char **av, char **env)
                         token =strtok(NULL, ":");
                     }
                 }
-                printf("%s:command not found\n", av[0]);
+                fprintf(stderr, "%s:command not found\n", av[0]);
                 free(str);
                 exit(127);
             }
             else if (execve(argv[0], argv, env) == -1)
             {
-                printf("%s: No such file or directory\n", av[0]);
+                fprintf(stderr, "%s: No such file or directory\n", av[0]);
+                free(str);
+                exit(127);
             }
             else
             {
