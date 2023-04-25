@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_COMMAND 10
@@ -42,6 +41,13 @@ void prompt(char **av, char **env)
         {
             argv[++j] = strtok(NULL, " ");
         }
+
+        if (strcmp(argv[0], "exit") == 0)
+        {
+            free(str);
+            exit(EXIT_SUCCESS);
+        }
+
         pid = fork();
         if (pid == -1)
         {
@@ -75,16 +81,17 @@ void prompt(char **av, char **env)
                 }
                 if (WIFEXITED(status) && WEXITSTATUS(status) == 127)
                 {
-                    dprintf(STDERR_FILENO, "%s: 1: %s: not found\n", av[0], argv[0]);
+                    fprintf(stderr, "%s:command not found\n", av[0]);
                     free(str);
                     exit(127);
                 }
                 else 
                 {
-                    fprintf(stderr, "%s:command not found\n", av[0]);
+                    fprintf(stderr, "/hsh: 1: %s: not found\n", argv[0]);
+                    free(str);
+                    exit(127); /*Change FAILURE to SUCCESS*/
                 }
-                free(str);
-                exit(127); /*Change FAILURE to SUCCESS*/
+                
 
                 /*fprintf(stderr, "%s:command not found\n", av[0]);
                 free(str);
@@ -104,6 +111,8 @@ void prompt(char **av, char **env)
         else
         {
             wait(&status);
+            /*printf("status: %d\n", WEXITSTATUS(status));
+            printf("stderr: %s\n", strerror(errno));*/
         }
     }
 }
