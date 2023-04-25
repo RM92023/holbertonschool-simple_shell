@@ -45,7 +45,7 @@ void prompt(char **av, char **env)
         if (strcmp(argv[0], "exit") == 0)
         {
             free(str);
-            exit(EXIT_SUCCESS);
+            exit(2);
         }
 
         pid = fork();
