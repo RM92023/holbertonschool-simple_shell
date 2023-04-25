@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #define MAX_COMMAND 10
+#define EXIT_CMD_VALUE 2
 
 void prompt(char **av, char **env)
 {
@@ -45,7 +46,13 @@ void prompt(char **av, char **env)
         if (strcmp(argv[0], "exit") == 0)
         {
             free(str);
-            exit(2);
+            exit(EXIT_SUCCESS);
+        }
+
+        if (strcmp(argv[0], "exit") == 0)
+        {
+            free(str);
+            exit(EXIT_CMD_VALUE);
         }
 
         pid = fork();
