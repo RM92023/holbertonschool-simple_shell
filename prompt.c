@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 #define MAX_COMMAND 10
 
 void prompt(char **av, char **env)
