@@ -22,7 +22,11 @@ void prompt(char **av, char **env)
         {
             free(str);
             exit(EXIT_SUCCESS);
-        }
+        }/*addin ELSE IF*/
+        else if (num_char == 1)/*Delete if not buggin*/
+        {
+            continue;
+        }/*Ending ELSE*/
         i = 0;
         while (str[i])
         {
@@ -44,7 +48,7 @@ void prompt(char **av, char **env)
         if (pid == -1)
         {
             free(str);
-            exit(EXIT_FAILURE);
+            exit(EXIT_SUCCESS);/*Change FAILURE to SUCCESS*/
         }
         if (pid == 0)
         {
@@ -73,11 +77,11 @@ void prompt(char **av, char **env)
                 }
                 printf("%s:command not found\n", av[0]);
                 free(str);
-                exit(127);
+                exit(EXIT_SUCCESS);/*Change FAILURE to SUCCESS*/
             }
-            /*else if (execve(argv[0], argv, env) == -1)
+            /*else if (execve(argv[0], argv, NULL) == -1)
             {
-                printf("%s: No such file or directory\n", av[0]);
+                printf(stderr"%s: %d: %s: not found\n", av[0]);
             }*/
             else
             {
