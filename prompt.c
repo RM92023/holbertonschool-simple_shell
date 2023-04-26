@@ -36,7 +36,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         {
             end--;
         }
-        srt[end + 1] = '\0';
+        str[end + 1] = '\0';
         str = str + start;
         /*end*/
         if (strlen(str) == 0)
