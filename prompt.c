@@ -27,7 +27,7 @@ void prompt(char **av __attribute__((unused)), char **env)
             exit(last_cmd_exit_status);
         }
         /*Remove the blank spaces at the end of the line.*/
-        i = num-char -1;
+        i = num_char -1;
         while (isspace(str[i]))
         {
             str[i] = '\0';
