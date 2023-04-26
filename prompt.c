@@ -54,7 +54,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (strcmp(argv[0], "exit") == 0)
             {
                 free(str);
-                exit(2); /*change the 0 a 2*/
+                exit(last_cmd_exit_status); /*change the exit*/
             }
         if (strcmp(argv[0], "env") == 0)
             {
