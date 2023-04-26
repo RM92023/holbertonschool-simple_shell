@@ -18,6 +18,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (isatty(STDIN_FILENO))
         {
         printf("$ ");
+        fflush(stdout); /*Add this line to ensure that the prompt is printed on the screen*/
         }
         num_char = getline(&str, &n, stdin);
         if (num_char == -1)
@@ -25,14 +26,12 @@ void prompt(char **av __attribute__((unused)), char **env)
             free(str);
             exit(last_cmd_exit_status);
         }
-        i = 0;
-        while (str[i])
+        /*Remove the blank spaces at the end of the line.*/
+        i = num-char -1;
+        while (isspace(str[i]))
         {
-            if (str[i] == '\n')
-            {
-                str[i] = 0;
-            }
-            i++;
+            str[i] = '\0';
+            i--;
         }
 
         path = getenv("PATH");
@@ -56,6 +55,19 @@ void prompt(char **av __attribute__((unused)), char **env)
                 free(str);
                 exit(last_cmd_exit_status);
             }
+        /*Check if the command is "cd"*/
+        if (strcmp(argv[0], "cd") == 0)
+        {
+            if (argv[1] == NULL) /*If no path is specified, change to home directory*/
+            {
+                chdir(getenv("HOME"));
+            }
+            else
+            {
+                chdir(argv[1]);
+            }
+            continue;
+        }
 
         if (strcmp(argv[0], "env") == 0)
             {
