@@ -26,12 +26,14 @@ void prompt(char **av __attribute__((unused)), char **env)
             free(str);
             exit(last_cmd_exit_status);
         }
-        /*Remove the blank spaces at the end of the line.*/
-        i = num_char -1;
-        while (isspace(str[i]))
+               i = 0;
+        while (str[i])
         {
-            str[i] = '\0';
-            i--;
+            if (str[i] == '\n')
+            {
+                str[i] = 0;
+            }
+            i++;
         }
 
         path = getenv("PATH");
