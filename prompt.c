@@ -23,14 +23,8 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (num_char == -1)
         {
             free(str);
-            exit(EXIT_SUCCESS); /*change exit*/
+            exit(EXIT_SUCCESS);
         }
-        
-        if (strlen(str) == 0)
-        {
-            continue;
-        }
-        
         i = 0;
         while (str[i])
         {
@@ -60,8 +54,9 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (strcmp(argv[0], "exit") == 0)
             {
                 free(str);
-                exit(last_cmd_exit_status); /*change the exit*/
+                exit(last_cmd_exit_status);
             }
+
         if (strcmp(argv[0], "env") == 0)
             {
                 ptr = env;
