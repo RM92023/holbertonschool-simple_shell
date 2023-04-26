@@ -2,7 +2,7 @@
 
 #define MAX_COMMAND 10
 
-void prompt(char **av, char **env)
+void prompt(char **av __attribute__((unused)), char **env)
 {
     char *str = NULL;
     int i, j, status;
@@ -101,7 +101,7 @@ void prompt(char **av, char **env)
                         token =strtok(NULL, ":");
                     }
                 }
-                    fprintf(stderr, "/hsh: 1: %s: not found\n", av[0]);
+                    fprintf(stderr, "/hsh: 1: %s: not found\n", argv[0]);
                     free(str);
                     exit(127); /*Change FAILURE to SUCCESS*/
 
@@ -115,14 +115,25 @@ void prompt(char **av, char **env)
                 free(str);
                 exit(127); Change FAILURE to SUCCESS
             }*/
-            else
+            /*else
             {
                 return;
-            }
+            }*/
         }
         else
         {
             wait(&status);
+            if (WIFEXITED(status))
+            {
+                if (WEXITSTATUS(status) == 0)
+                {
+                    continue;
+                }
+                else
+                {
+                    /*fprintf(stderr, "Error: command '%s' returned non-zero exit status %d\n", argv[0],*/ WEXITSTATUS(status);
+                }
+            }
             /*printf("status: %d\n", WEXITSTATUS(status));
             printf("stderr: %s\n", strerror(errno));*/
         }
