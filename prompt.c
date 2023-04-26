@@ -54,7 +54,12 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (strcmp(argv[0], "exit") == 0)
             {
                 free(str);
-                exit(2); /*change of 0 to 2 */
+                exit(0);
+            }
+        else        /*adding else*/
+            {
+                free(str);
+                exit(2);
             }
 
         if (strcmp(argv[0], "env") == 0)
