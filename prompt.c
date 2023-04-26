@@ -74,7 +74,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (pid == -1)
         {
             free(str);
-            exit(EXIT_FAILURE);/*Change FAILURE to SUCCESS*/
+            exit(EXIT_SUCCESS);
         }
         if (pid == 0)
         {
@@ -101,7 +101,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                         token =strtok(NULL, ":");
                     }
                 }
-                    fprintf(stderr, "/hsh: 1: %s: not found\n", argv[0]);
+                    fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
                     free(str);
                     exit(127); /*Change FAILURE to SUCCESS*/
 
@@ -109,33 +109,20 @@ void prompt(char **av __attribute__((unused)), char **env)
                 free(str);
                 exit(127);*//*Change FAILURE to SUCCESS*/
             }
-            /*else if (execve(argv[0], argv, NULL) == -1)
+            else if (execve(argv[0], argv, env) == 0)
             {
                 fprintf(stderr, "%s: 1: %s: not found\n", av[0], argv[0]);
                 free(str);
-                exit(127); Change FAILURE to SUCCESS
-            }*/
-            /*else
+                exit(EXIT_SUCCESS);
+            }
+            else
             {
                 return;
-            }*/
+            }
         }
         else
         {
             wait(&status);
-            if (WIFEXITED(status))
-            {
-                if (WEXITSTATUS(status) == 0)
-                {
-                    continue;
-                }
-                else
-                {
-                    /*fprintf(stderr, "Error: command '%s' returned non-zero exit status %d\n", argv[0],*/ WEXITSTATUS(status);
-                }
-            }
-            /*printf("status: %d\n", WEXITSTATUS(status));
-            printf("stderr: %s\n", strerror(errno));*/
         }
     }
 }
