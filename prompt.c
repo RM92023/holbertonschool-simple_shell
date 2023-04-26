@@ -7,6 +7,7 @@ void prompt(char **av __attribute__((unused)), char **env)
     char *str = NULL;
     int i, j, status, last_cmd_exit_status = 0;
     size_t n = 0;
+    size_t start = 0, end; /*Removing whitespace*/
     ssize_t num_char;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
@@ -25,6 +26,24 @@ void prompt(char **av __attribute__((unused)), char **env)
             free(str);
             exit(last_cmd_exit_status);
         }
+        /*here start removing whitespace*/
+        end = strlen(str) -1;
+        while (isspace(str[start])) 
+        {
+            start ++;
+        }
+        while (isspace(str[end])) 
+        {
+            end--;
+        }
+        srt[end + 1] = '\0';
+        str = str + start;
+        /*end*/
+        if (strlen(str) == 0)
+        {
+            continue;
+        }
+        
         i = 0;
         while (str[i])
         {
@@ -39,9 +58,11 @@ void prompt(char **av __attribute__((unused)), char **env)
         /*found = false; new line env exit*/
         j = 0;
         argv[j] = strtok(str, " ");
+        /*Split the input string into words */
         while (argv[j] != NULL)
         {
-            argv[++j] = strtok(NULL, " ");
+            j++;
+            argv[j] = strtok(NULL, " ");
         }
 
         /*begin exit and env*/
