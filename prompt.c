@@ -56,7 +56,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                 free(str);
                 exit(0);
             }
-        else        /*adding else*/
+        else (strcmp(argv[0], "exit") == 1)       /*adding else if*/
             {
                 free(str);
                 exit(2);
