@@ -1,12 +1,11 @@
 #include "main.h"
-#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
 void prompt(char **av __attribute__((unused)), char **env)
 {
     char *str = NULL;
-    int i, j, status;
+    int i, j, status, last_cmd_exit_status = 0;
     size_t n = 0;
     ssize_t num_char;
     char *argv[MAX_COMMAND];
@@ -24,7 +23,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (num_char == -1)
         {
             free(str);
-            exit(EXIT_SUCCESS);
+            exit(last_cmd_exit_status);
         }
         i = 0;
         while (str[i])
@@ -55,7 +54,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (strcmp(argv[0], "exit") == 0)
             {
                 free(str);
-                exit(EXIT_SUCCESS);
+                exit(0);
             }
 
         if (strcmp(argv[0], "env") == 0)
@@ -75,7 +74,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (pid == -1)
         {
             free(str);
-            exit(EXIT_SUCCESS);
+            exit(1);
         }
         if (pid == 0)
         {
@@ -104,7 +103,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                 }
                     fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
                     free(str);
-                    exit(EXIT_FAILURE); /*Change FAILURE to 127*/
+                    exit(127); /*Change 127 to failure*/
 
                 /*fprintf(stderr, "%s:command not found\n", av[0]);
                 free(str);
@@ -116,14 +115,23 @@ void prompt(char **av __attribute__((unused)), char **env)
                 free(str);
                 exit(EXIT_SUCCESS);
             }*/
-            else
+            /*else
             {
                 return;
-            }
+            }*/
         }
         else
         {
             wait(&status);
+            last_cmd_exit_status = WEXITSTATUS(status);
         }
+    }
+    if (strcmp(argv[0], "exit") == 0)
+    {
+        exit(2);
+    }
+    else
+    {
+        exit(0);
     }
 }
