@@ -106,10 +106,20 @@ void prompt(char **av __attribute__((unused)), char **env)
         else
         {
             waitpid(pid, &status, 0);
-            if (WIFEXITED(status))
+            if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+                {
+                    printf("Segmentation fault\n");
+                    exit_status = 139;
+                }
+            else if (WIFEXITED(status))
+                {
+                    exit_status = WEXITSTATUS(status);
+                }
+
+            /*if (WIFEXITED(status))
             {
                 exit_status = WEXITSTATUS(status);
-            }
+            }*/
         }
         free(string);
         string = NULL;
