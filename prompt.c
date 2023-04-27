@@ -114,6 +114,6 @@ void prompt(char **av __attribute__((unused)), char **env)
         }
         free(string);
         string = NULL;
-        free(cmd_path)
+        free(cmd_path);
     }
 }
