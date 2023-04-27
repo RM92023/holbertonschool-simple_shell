@@ -143,7 +143,7 @@ $
 ## Commands :trident:
 
 | Commands |   Description   |
-|:----------|-----------------:|
+|:----------:|:-----------------|
 |cd|command that changes the current working directory to the previous working directory|
 |pwd|command that writes to standard output the full path name of your current directory|
 |ls|command to list the files in a long format|
