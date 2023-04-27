@@ -73,7 +73,7 @@ void prompt(char **av __attribute__((unused)), char **env)
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
                 free(string);
-                exit(WEXITSTATUS(status));
+                exit(0);
             }
             if (execve(argv[0], argv, env) == -1)
             {
