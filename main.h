@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 
 void prompt(char **av, char **env);
+int execute_command(char **argv, char **env);
 
 
 #endif
