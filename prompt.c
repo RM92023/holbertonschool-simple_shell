@@ -24,7 +24,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (len == -1)
         {
             free(string);
-            exit(exit_status);
+            exit(WEXITSTATUS(status));
         }
         i = 0;
         while (string[i])
@@ -66,14 +66,14 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (pid == -1)
         {
             free(string);
-            exit(1);
+            exit(WEXITSTATUS(status));
         }
         if (pid == 0)
         {
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
                 free(string);
-                exit(EXIT_SUCCESS);
+                exit(WEXITSTATUS(status));
             }
             if (execve(argv[0], argv, env) == -1)
             {
@@ -88,6 +88,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                         {
                             argv[0] = cmd_path;
                             execve(argv[0], argv, env);
+                            free(cmd_path);
                         }
                         else
                         {
@@ -106,20 +107,10 @@ void prompt(char **av __attribute__((unused)), char **env)
         else
         {
             waitpid(pid, &status, 0);
-            if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
-                {
-                    printf("Segmentation fault\n");
-                    exit_status = 139;
-                }
-            else if (WIFEXITED(status))
-                {
-                    exit_status = WEXITSTATUS(status);
-                }
-
-            /*if (WIFEXITED(status))
+            if (WIFEXITED(status))
             {
                 exit_status = WEXITSTATUS(status);
-            }*/
+            }
         }
         free(string);
         string = NULL;
