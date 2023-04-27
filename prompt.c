@@ -73,7 +73,7 @@ void prompt(char **av __attribute__((unused)), char **env)
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
                 free(string);
-                exit(0);
+                exit(WEXITSTATUS(status));
             }
             if (execve(argv[0], argv, env) == -1)
             {
@@ -114,6 +114,6 @@ void prompt(char **av __attribute__((unused)), char **env)
         }
         free(string);
         string = NULL;
-        n = 0;
+        free(cmd_path)
     }
 }
