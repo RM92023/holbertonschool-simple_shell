@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
@@ -77,43 +76,30 @@ void prompt(char **av __attribute__((unused)), char **env)
             }
             if (execve(argv[0], argv, env) == -1)
             {
-                if (path != NULL)
+                cmd_path = malloc(strlen(argv[0]) + 1);
+                if (cmd_path == NULL)
                 {
-                    token = strtok(path, ":");
-                    while (token != NULL)
-                    {
-                        cmd_path = malloc(strlen(token) + strlen(argv[0]) + 2);
-                        sprintf(cmd_path, "%s/%s", token, argv[0]);
-                        if (access(cmd_path, F_OK) == 0)
-                        {
-                            argv[0] = cmd_path;
-                            execve(argv[0], argv, env);
-                            free(cmd_path);
-                        }
-                        else
-                        {
-                            free(cmd_path);
-                            token = strtok(NULL, ":");
-                        }
-                    }
+                    free(string);
+                    exit(EXIT_FAILURE);
                 }
-
-                /* Print an error message if the command is not found */
-                fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
+                token = strtok(path, ":");
+                while (token != NULL)
+                {
+                    strcpy(cmd_path, token);
+                    strcat(cmd_path, "/");
+                    strcat(cmd_path, argv[0]);
+                    execve(cmd_path, argv, env);
+                    token = strtok(NULL, ":");
+                }
+                free(cmd_path);
                 free(string);
-                exit(127);
+                exit(EXIT_FAILURE);
             }
         }
         else
         {
-            waitpid(pid, &status, 0);
-            if (WIFEXITED(status))
-            {
-                exit_status = WEXITSTATUS(status);
-            }
+            waitpid(pid, &status, WUNTRACED);
+            exit_status = WEXITSTATUS(status);
         }
-        free(string);
-        string = NULL;
-        free(cmd_path);
     }
 }
