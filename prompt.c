@@ -106,7 +106,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         else
         {
             /*waitpid(pid, &status, 0);*/
-            /*if (WIFEXITED(status))*/
+            if (WIFEXITED(status))
             {
                 exit_status = WEXITSTATUS(status);
             }
