@@ -2,93 +2,116 @@
 
 #define MAX_COMMAND 10
 
-void prompt(char **av, char **env)
+void prompt(char **av __attribute__((unused)), char **env)
 {
-    char *str = NULL;
-    int i, j, status;
+    char *string = NULL;
+    int i, j, status, exit_status = 0;
     size_t n = 0;
-    ssize_t num_char;
+    ssize_t len;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
+    char **ptr;
     pid_t pid;
     while (1)
     {
         if (isatty(STDIN_FILENO))
         {
-        printf("$ ");
+            printf("$ ");
+            fflush(stdout);
         }
-        num_char = getline(&str, &n, stdin);
-        if (num_char == -1)
+        len = getline(&string, &n, stdin);
+        if (len == -1)
         {
-            free(str);
-            exit(EXIT_SUCCESS);
+            free(string);
+            exit(exit_status);
         }
         i = 0;
-        while (str[i])
+        while (string[i])
         {
-            if (str[i] == '\n')
+            if (string[i] == '\n')
             {
-                str[i] = 0;
+                string[i] = 0;
             }
             i++;
         }
-
         path = getenv("PATH");
         j = 0;
-        argv[j] = strtok(str, " ");
+        argv[j] = strtok(string, " ");
         while (argv[j] != NULL)
         {
             argv[++j] = strtok(NULL, " ");
         }
+        if (strcmp(argv[0], "clear") == 0)
+        {
+            system("clear");
+            continue;
+        }
+        if (strcmp(argv[0], "exit") == 0)
+        {
+            free(string);
+            exit(exit_status);
+        }
+        if (strcmp(argv[0], "env") == 0)
+        {
+            ptr = env;
+            while (*ptr != NULL)
+            {
+                printf("%s\n", *ptr);
+                ptr++;
+            }
+            continue;
+        }
         pid = fork();
         if (pid == -1)
         {
-            free(str);
-            exit(EXIT_FAILURE);
+            free(string);
+            exit(1);
         }
         if (pid == 0)
         {
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
-                continue;
+                free(string);
+                exit(exit_status);
             }
-
             if (execve(argv[0], argv, env) == -1)
-            { 
-                token = strtok(path, ":");
-                while (token != NULL)
+            {
+                if (path != NULL)
                 {
-                    cmd_path = malloc(strlen(token) + strlen(argv[0]) + 2);
-                    sprintf(cmd_path, "%s/%s", token, argv[0]);
-                    if (access(cmd_path, F_OK) == 0)
+                    token = strtok(path, ":");
+                    while (token != NULL)
                     {
-                        argv[0] = cmd_path;
-                        execve(argv [0], argv, env);
-                    }
-                    else
-                    {
-                        free(cmd_path);
-                        token =strtok(NULL, ":");
+                        cmd_path = malloc(strlen(token) + strlen(argv[0]) + 2);
+                        sprintf(cmd_path, "%s/%s", token, argv[0]);
+                        if (access(cmd_path, F_OK) == 0)
+                        {
+                            argv[0] = cmd_path;
+                            execve(argv[0], argv, env);
+                        }
+                        else
+                        {
+                            free(cmd_path);
+                            token = strtok(NULL, ":");
+                        }
                     }
                 }
-                fprintf(stderr, "%s:command not found\n", av[0]);
-                free(str);
+
+                /* Print an error message if the command is not found */
+                fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
+                free(string);
                 exit(127);
-            }
-            else if (execve(argv[0], argv, env) == -1)
-            {
-                fprintf(stderr, "%s: No such file or directory\n", av[0]);
-                free(str);
-                exit(127);
-            }
-            else
-            {
-                return;
             }
         }
         else
         {
-            wait(&status);
+            waitpid(pid, &status, 0);
+            if (WIFEXITED(status))
+            {
+                exit_status = WEXITSTATUS(status);
+            }
         }
+        free(string);
+        string = NULL;
+        n = 0;
     }
 }
