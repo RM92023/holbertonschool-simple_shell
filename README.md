@@ -160,7 +160,7 @@ Exit commands
 
 * **main.h:** This file contains prototypes and the project libraries
 
-* **main.c:** 
+* **main.c:** This file is the function that is going to execute the simple shell
 
 * **prompt.c:**
 
