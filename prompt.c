@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
@@ -39,16 +38,16 @@ void prompt(char **av __attribute__((unused)), char **env)
         path = getenv("PATH");
         j = 0;
         argv[j] = strtok(str, " ");
-        while (argv[j] != NULL)
+        while (argv[j])
         {
             argv[++j] = strtok(NULL, " ");
         }
 
-        if (strcmp(argv[0], "clear") == 0)
+        /*if (strcmp(argv[0], "clear") == 0)
         {
             system("clear");
             continue;
-        }
+        }*/
 
         if (strcmp(argv[0], "exit") == 0)
         {
