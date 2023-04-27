@@ -9,7 +9,7 @@ void prompt(char **av __attribute__((unused)), char **env)
     size_t n = 0;
     ssize_t num_char;
     char *argv[MAX_COMMAND];
-    char *path, *cmd_path, *token, *path1;
+    char *path, *cmd_path, *token;
     char **ptr;
     pid_t pid;
     while (1)
@@ -100,25 +100,12 @@ void prompt(char **av __attribute__((unused)), char **env)
                         }
                     }
                 }
-
-                /* Check if PATH1 exists */
-                path1 = getenv("PATH1");
-                if (path1 != NULL)
+                else
                 {
-                    /* Try to find the command in PATH1 */
-                    cmd_path = malloc(strlen(path1) + strlen(argv[0]) + 2);
-                    sprintf(cmd_path, "%s/%s", path1, argv[0]);
-                    if (access(cmd_path, F_OK) == 0)
-                    {
-                        argv[0] = cmd_path;
-                        execve(argv[0], argv, env);
-                    }
-                    else
-                    {
-                        free(cmd_path);
-                    }
+                    fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
+                    free(str);
+                    exit(127);
                 }
-
                 /* Print an error message if the command is not found */
                 fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
                 free(str);
