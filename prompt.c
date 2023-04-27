@@ -2,7 +2,7 @@
 
 #define MAX_COMMAND 10
 
-void prompt(char **av __attribute__((unused)), char **env)
+/*void prompt(char **av __attribute__((unused)), char **env)*/
 {
     char *string = NULL;
     int i, j, status, exit_status = 0;
