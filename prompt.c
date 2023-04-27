@@ -34,11 +34,17 @@ void prompt(char **av __attribute__((unused)), char **env)
             }
             i++;
         }
+        path = getenv("PATH");
         j = 0;
-        argv[j] = strtok(string, " ");
+        argv[j] = strtok(string, " \t\n\v\f\r");
         while (argv[j] != NULL)
         {
-            argv[++j] = strtok(NULL, " ");
+            argv[++j] = strtok(NULL, " \t\n\v\f\r");
+        }
+        if (strcmp(argv[0], "clear") == 0)
+        {
+            system("clear");
+            continue;
         }
         if (strcmp(argv[0], "exit") == 0)
         {
@@ -70,8 +76,6 @@ void prompt(char **av __attribute__((unused)), char **env)
             }
             if (execve(argv[0], argv, env) == -1)
             {
-                /* Verificar si el comando existe en las rutas especificadas en PATH */
-                path = getenv("PATH");
                 if (path != NULL)
                 {
                     token = strtok(path, ":");
@@ -93,8 +97,8 @@ void prompt(char **av __attribute__((unused)), char **env)
                     }
                 }
 
-                /* Imprimir un mensaje de error si el comando no se encuentra */
-                fprintf(stderr, "./shell: 1: %s: not found\n", argv[0]);
+                /* Print an error message if the command is not found */
+                fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
                 free(string);
                 exit(127);
             }
