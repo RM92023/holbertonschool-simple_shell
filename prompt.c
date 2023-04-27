@@ -35,19 +35,11 @@ void prompt(char **av __attribute__((unused)), char **env)
             i++;
         }
 
-        path = getenv("PATH");
-        j = 0;
-        argv[j] = strtok(str, " ");
-        while (argv[j])
-        {
-            argv[++j] = strtok(NULL, " ");
-        }
-
-        /*if (strcmp(argv[0], "clear") == 0)
+        if (strcmp(argv[0], "clear") == 0)
         {
             system("clear");
             continue;
-        }*/
+        }
 
         if (strcmp(argv[0], "exit") == 0)
         {
@@ -74,10 +66,17 @@ void prompt(char **av __attribute__((unused)), char **env)
         }
         if (pid == 0)
         {
+            path = getenv("PATH");
+            j = 0;
+            argv[j] = strtok(str, " ");
+            while (argv[j])
+            {
+                argv[++j] = strtok(NULL, " ");
+            }
+            
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
-                free(str);
-                exit(last_cmd_exit_status);
+                continue;
             }
 
             if (execve(argv[0], argv, env) == -1)
@@ -92,7 +91,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                         if (access(cmd_path, F_OK) == 0)
                         {
                             argv[0] = cmd_path;
-                            execve(argv [j], argv, env);/*0*/
+                            execve(argv [0], argv, env);
                         }
                         else
                         {
