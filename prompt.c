@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
@@ -72,7 +73,7 @@ void prompt(char **av __attribute__((unused)), char **env)
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
                 free(string);
-                exit(exit_status);
+                exit(EXIT_SUCCESS);
             }
             if (execve(argv[0], argv, env) == -1)
             {
