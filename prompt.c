@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
@@ -23,7 +24,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (num_char == -1)
         {
             free(str);
-            last_cmd_exit_status = WEXITSTATUS(status);
+            exit (WEXITSTATUS(status));
         }
         i = 0;
         while (str[i])
@@ -76,7 +77,8 @@ void prompt(char **av __attribute__((unused)), char **env)
         {
             if ((argv[0] == NULL) || strlen(argv[0]) == 0)
             {
-                continue;
+                free(str);
+                exit(last_cmd_exit_status);
             }
 
             if (execve(argv[0], argv, env) == -1)
@@ -99,12 +101,6 @@ void prompt(char **av __attribute__((unused)), char **env)
                             token = strtok(NULL, ":");
                         }
                     }
-                }
-                else
-                {
-                    fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-                    free(str);
-                    exit(127);
                 }
                 /* Print an error message if the command is not found */
                 fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
