@@ -105,10 +105,23 @@ void prompt(char **av __attribute__((unused)), char **env)
         }
         else
         {
-            waitpid(pid, &status, 0);
+            /*waitpid(pid, &status, 0);
             if (WIFEXITED(status))
             {
                 exit_status = WEXITSTATUS(status);
+            }*/
+            if (waitpid(pid, &status, 0) == -1)
+            {
+                free(string);
+                exit(exit_status);
+            }
+            if (WIFEXITED(status))
+            {
+                exit_status = WEXITSTATUS(status);
+            }
+            else if (WIFSIGNALED(status))
+            {
+                exit_status = 139;
             }
         }
         free(string);
