@@ -23,7 +23,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         if (num_char == -1)
         {
             free(str);
-            exit(last_cmd_exit_status);
+            last_cmd_exit_status = WEXITSTATUS(status);
         }
         i = 0;
         while (str[i])
