@@ -92,7 +92,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                         if (access(cmd_path, F_OK) == 0)
                         {
                             argv[0] = cmd_path;
-                            execve(argv [0], argv, env);
+                            execve(argv [j], argv, env);/*0*/
                         }
                         else
                         {
