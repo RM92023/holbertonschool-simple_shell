@@ -164,7 +164,7 @@ Exit commands
 
 * **prompt.c:** This file contains all shell code
 
-* **man_1_simple_shell:**
+* **man_1_simple_shell:** This file contains the manual of the shell
 
 
 ***
