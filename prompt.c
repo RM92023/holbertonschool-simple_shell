@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
