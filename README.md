@@ -142,6 +142,7 @@ $
 |echo|command tool used for displaying lines of text or string.|
 |mkdir|command creates directories|
 
+Exit commands
 
 |Exit|
 |------|
@@ -153,13 +154,13 @@ $
 ***
 ## Files :crossed_swords:
 
-* **README.md:** This file, contains the infotmation of this project
+* **README.md:** This file contains the information of this project
 
-* **AUTHORS:** This file, contains the author of this project
+* **AUTHORS:** This file contains the author of this project
 
-* **main.h:** 
+* **main.h:** This file contains prototypes and the project libraries
 
-* **main.c:**
+* **main.c:** 
 
 * **prompt.c:**
 
