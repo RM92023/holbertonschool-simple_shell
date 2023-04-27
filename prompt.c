@@ -1,5 +1,4 @@
 #include "main.h"
-#include <stdlib.h>
 
 #define MAX_COMMAND 10
 
@@ -37,10 +36,10 @@ void prompt(char **av __attribute__((unused)), char **env)
         }
         path = getenv("PATH");
         j = 0;
-        argv[j] = strtok(string, " ");
+        argv[j] = strtok(string, " \t\n\v\f\r");
         while (argv[j] != NULL)
         {
-            argv[++j] = strtok(NULL, " ");
+            argv[++j] = strtok(NULL, " \t\n\v\f\r");
         }
         if (strcmp(argv[0], "clear") == 0)
         {
@@ -106,25 +105,13 @@ void prompt(char **av __attribute__((unused)), char **env)
         }
         else
         {
-            /*waitpid(pid, &status, 0);
+            waitpid(pid, &status, 0);
             if (WIFEXITED(status))
             {
                 exit_status = WEXITSTATUS(status);
-            }*/
-            if (waitpid(pid, &status, 0) == -1)
-            {
-                free(string);
-                exit(EXIT_SUCCESS);
-            }
-            if (WIFEXITED(status))
-            {
-                exit_status = WEXITSTATUS(status);
-            }
-            else if (WIFSIGNALED(status))
-            {
-                exit_status = 139;
             }
         }
         free(string);
+        string = NULL;
     }
 }
