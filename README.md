@@ -1,11 +1,9 @@
 # Simple Shell :dragon:
 
-
-![Badge en Desarollo](https://img.shields.io/badge/STATUS-EN%20DESAROLLO-green)
-![my badge](https://img.shields.io/badge/branch-2-blue)
-
-[![GitHub watchers](https://img.shields.io/github/watchers/Naereen/StrapDown.js.svg?style=social&label=Watch&maxAge=2592000)](https://GitHub.com/Naereen/StrapDown.js/watchers/)
-
+<img src="https://emojis.slackmojis.com/emojis/images/1531849353/4244/blob-octopus.gif" width="60" height="60"/> ![GitHub contributors](https://img.shields.io/github/contributors/RM92023/holbertonschool-simple_shell) ![Badge en Desarollo](https://img.shields.io/badge/STATUS-IN%20DEVELOPMENT-green) ![my badge](https://img.shields.io/badge/branch-2-blue) <img src="https://emojis.slackmojis.com/emojis/images/1531849353/4244/blob-octopus.gif" width="60" height="60"/>
+***
+[![GitHub watchers](https://img.shields.io/github/watchers/RM92023/holbertonschool-simple_shell.svg?style=social&label=Watch&maxAge=2592000)](https://GitHub.com/RM92023/holbertonschool-simple_shell/watchers/)
+![C](https://img.shields.io/badge/-C-black?logo=c&style=social)&nbsp;&nbsp;<img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30">
 
 ![Jokes Card](https://readme-jokes.vercel.app/api)
 
@@ -99,6 +97,12 @@ $
 ~~~c
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 ~~~
+
+To run the shell is as follows:
+
+~~~c
+./hsh
+~~~
 ***
 ## Testing :performing_arts:
 
@@ -132,11 +136,18 @@ $
 
 | Commands |   Description   |
 |----------|-----------------|
-|    cd    |    zssz         |
-|    cp    |                 |
-|   echo   |                 |
-|    rm    |                 |
-|   mkdir  |                 |
+|cd|command that changes the current working directory to the previous working directory|
+|pwd|command that writes to standard output the full path name of your current directory|
+|ls|command to list the files in a long format|
+|echo|command tool used for displaying lines of text or string.|
+|mkdir|command creates directories|
+
+
+|Exit|
+|------|
+|Ctrl-D|
+|Ctrl-C|
+
 
 
 ***

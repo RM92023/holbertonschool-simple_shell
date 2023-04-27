@@ -95,6 +95,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                         }
                     }
                 }
+
                 /* Print an error message if the command is not found */
                 fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
                 free(string);
