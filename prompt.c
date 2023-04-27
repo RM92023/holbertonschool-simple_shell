@@ -8,11 +8,11 @@ void prompt(char **av __attribute__((unused)), char **env)
     char *string = NULL;
     int i, j, status, exit_status = 0;
     size_t n = 0;
+    ssize_t len;
     char *argv[MAX_COMMAND];
     char *path, *cmd_path, *token;
     char **ptr;
     pid_t pid;
-    ssize_t len;
     while (1)
     {
         if (isatty(STDIN_FILENO))
@@ -75,32 +75,34 @@ void prompt(char **av __attribute__((unused)), char **env)
                 free(string);
                 exit(WEXITSTATUS(status));
             }
-            cmd_path = NULL;
-            token = strtok(path, ":");
-            while (token != NULL)
+            if (execve(argv[0], argv, env) == -1)
             {
-                cmd_path = malloc(strlen(token) + strlen(argv[0]) + 2);
-                sprintf(cmd_path, "%s/%s", token, argv[0]);
-                if (access(cmd_path, F_OK) == 0)
+                if (path != NULL)
                 {
-                    break;
+                    token = strtok(path, ":");
+                    while (token != NULL)
+                    {
+                        cmd_path = malloc(strlen(token) + strlen(argv[0]) + 2);
+                        sprintf(cmd_path, "%s/%s", token, argv[0]);
+                        if (access(cmd_path, F_OK) == 0)
+                        {
+                            argv[0] = cmd_path;
+                            execve(argv[0], argv, env);
+                            free(cmd_path);
+                        }
+                        else
+                        {
+                            free(cmd_path);
+                            token = strtok(NULL, ":");
+                        }
+                    }
                 }
-                free(cmd_path);
-                cmd_path = NULL;
-                token = strtok(NULL, ":");
-            }
-            if (cmd_path == NULL)
-            {
+
+                /* Print an error message if the command is not found */
+                fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
                 free(string);
-                exit(WEXITSTATUS(status));
+                exit(127);
             }
-            if (execve(cmd_path, argv, env) == -1)
-            {
-                free(string);
-                exit(WEXITSTATUS(status));
-            }
-            free(cmd_path);
-            free(argv[0]);
         }
         else
         {
@@ -110,5 +112,7 @@ void prompt(char **av __attribute__((unused)), char **env)
                 exit_status = WEXITSTATUS(status);
             }
         }
+        free(string);
+        string = NULL;
     }
 }
