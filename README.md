@@ -153,11 +153,17 @@ $
 ***
 ## Files :crossed_swords:
 
-* **README.md** : This file, contains the infotmation of this project
+* **README.md:** This file, contains the infotmation of this project
 
-* **.h**
+* **AUTHORS:** This file, contains the author of this project
 
-* **.c**
+* **main.h:** 
+
+* **main.c:**
+
+* **prompt.c:**
+
+* **man_1_simple_shell:**
 
 
 ***
