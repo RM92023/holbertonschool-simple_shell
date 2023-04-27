@@ -32,7 +32,6 @@ void prompt(char **av __attribute__((unused)), char **env)
             if (string[i] == '\n')
             {
                 string[i] = 0;
-                free(string);
             }
             i++;
         }
@@ -41,7 +40,6 @@ void prompt(char **av __attribute__((unused)), char **env)
         argv[j] = strtok(string, " ");
         while (argv[j] != NULL)
         {
-            free(argv[j]);
             argv[++j] = strtok(NULL, " ");
         }
         if (strcmp(argv[0], "clear") == 0)
@@ -88,7 +86,6 @@ void prompt(char **av __attribute__((unused)), char **env)
                         sprintf(cmd_path, "%s/%s", token, argv[0]);
                         if (access(cmd_path, F_OK) == 0)
                         {
-                            free(cmd_path);
                             argv[0] = cmd_path;
                             execve(argv[0], argv, env);
                             free(cmd_path);
