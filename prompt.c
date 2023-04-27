@@ -22,8 +22,7 @@ void prompt(char **av __attribute__((unused)), char **env)
         len = getline(&string, &n, stdin);
         if (len == -1)
         {
-            free(string);
-            exit(WEXITSTATUS(status));
+            exit(98);
         }
         i = 0;
         while (string[i])
