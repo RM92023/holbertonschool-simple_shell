@@ -1,9 +1,17 @@
 # Simple Shell :dragon:
+<p align="center">
 
 <img src="https://emojis.slackmojis.com/emojis/images/1531849353/4244/blob-octopus.gif" width="60" height="60"/> ![GitHub contributors](https://img.shields.io/github/contributors/RM92023/holbertonschool-simple_shell) ![Badge en Desarollo](https://img.shields.io/badge/STATUS-IN%20DEVELOPMENT-green) ![my badge](https://img.shields.io/badge/branch-2-blue) <img src="https://emojis.slackmojis.com/emojis/images/1531849353/4244/blob-octopus.gif" width="60" height="60"/>
+</p>
+
 ***
+
+<p align="center">
+
 [![GitHub watchers](https://img.shields.io/github/watchers/RM92023/holbertonschool-simple_shell.svg?style=social&label=Watch&maxAge=2592000)](https://GitHub.com/RM92023/holbertonschool-simple_shell/watchers/)
 ![C](https://img.shields.io/badge/-C-black?logo=c&style=social)&nbsp;&nbsp;<img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30">
+
+</p>
 
 ![Jokes Card](https://readme-jokes.vercel.app/api)
 
@@ -135,7 +143,7 @@ $
 ## Commands :trident:
 
 | Commands |   Description   |
-|----------|-----------------|
+|:----------|-----------------:|
 |cd|command that changes the current working directory to the previous working directory|
 |pwd|command that writes to standard output the full path name of your current directory|
 |ls|command to list the files in a long format|
@@ -145,7 +153,7 @@ $
 Exit commands
 
 |Exit|
-|------|
+|:------:|
 |Ctrl-D|
 |Ctrl-C|
 
