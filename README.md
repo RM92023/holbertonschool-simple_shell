@@ -162,7 +162,7 @@ Exit commands
 
 * **main.c:** This file is the function that is going to execute the simple shell
 
-* **prompt.c:**
+* **prompt.c:** This file contains all shell code
 
 * **man_1_simple_shell:**
 
