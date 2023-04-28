@@ -4,8 +4,8 @@
 
 void prompt(char **av __attribute__((unused)), char **env)
 {
-    /*char *string = NULL;*/
-    /*int i, j, status, exit_status = 0;*/
+    char *string = NULL;
+    int i, j, status, exit_status = 0;
     size_t n = 0;
     ssize_t len;
     char *argv[MAX_COMMAND];
