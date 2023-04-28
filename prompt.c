@@ -69,11 +69,6 @@ void prompt(char **av __attribute__((unused)), char **env)
         }
         if (pid == 0)
         {
-            if ((argv[0] == NULL) || strlen(argv[0]) == 0)
-            {
-                free(string);
-                exit(WEXITSTATUS(status));
-            }
             if (execve(argv[0], argv, env) == -1)
             {
                 if (path != NULL)
@@ -101,6 +96,12 @@ void prompt(char **av __attribute__((unused)), char **env)
                 fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
                 free(string);
                 exit(127);
+                
+                if ((argv[0] == NULL) || strlen(argv[0]) == 0)
+                {
+                    free(string);
+                    exit(WEXITSTATUS(status));
+                }
             }
         }
         else
